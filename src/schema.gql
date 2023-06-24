@@ -6,7 +6,7 @@ type Item {
   id: ID!
   name: String!
   quantity: Float!
-  quantityUnits: String!
+  quantityUnits: String
 }
 
 type Query {
