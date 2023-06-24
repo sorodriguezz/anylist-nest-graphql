@@ -1,22 +1,22 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'items' })
 @ObjectType()
 export class Item {
-  @Field(() => String)
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => ID)
   id: string;
 
-  @Field(() => String)
   @Column()
+  @Field(() => String)
   name: string;
 
-  @Field(() => Int)
   @Column()
+  @Field(() => Float)
   quantity: number;
 
-  @Field(() => String)
   @Column()
+  @Field(() => String)
   quantityUnits: string;
 }

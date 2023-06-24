@@ -3,9 +3,9 @@
 # ------------------------------------------------------
 
 type Item {
-  id: String!
+  id: ID!
   name: String!
-  quantity: Int!
+  quantity: Float!
   quantityUnits: String!
 }
 
