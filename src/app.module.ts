@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ItemsModule } from './items/items.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -16,6 +17,16 @@ import { ItemsModule } from './items/items.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       // este plugin es para levantar el Apollo Studio
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      synchronize: true, // en producción colocar en false
+      autoLoadEntities: true,
     }),
     ItemsModule,
   ],
