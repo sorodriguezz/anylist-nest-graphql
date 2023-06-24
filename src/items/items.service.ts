@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateItemInput, UpdateItemInput } from './dto/inputs';
 import { Item } from './entities/item.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ItemsService {
@@ -25,8 +25,11 @@ export class ItemsService {
     return item;
   }
 
-  update(id: number, updateItemInput: UpdateItemInput) {
-    return `This action updates a #${id} item`;
+  async update(id: string, updateItemInput: UpdateItemInput): Promise<Item> {
+    // preload buscar id y cargar toda la entidad
+    const item = await this.itemsRepository.preload(updateItemInput);
+    if (!item) throw new NotFoundException(`Item with id: ${id} not found`);
+    return this.itemsRepository.save(item);
   }
 
   remove(id: number) {
