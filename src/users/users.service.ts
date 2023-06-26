@@ -35,8 +35,15 @@ export class UsersService {
     return [];
   }
 
-  async findOne(_id: string): Promise<User> {
-    throw new Error(`findOne not implemented`);
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.usersRepository.findOneByOrFail({ email });
+    } catch (error) {
+      this.handleDBErrors({
+        code: 'error-001',
+        detail: `${email} not found`,
+      });
+    }
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
@@ -48,11 +55,15 @@ export class UsersService {
   }
 
   private handleDBErrors(error: any): never {
-    this.logger.error(error);
-
     if (error.code === '23505') {
       throw new BadRequestException(error.detail.replace('Key ', ''));
     }
+
+    if (error.code == 'error-001') {
+      throw new BadRequestException(error.detail);
+    }
+
+    this.logger.error(error);
 
     throw new InternalServerErrorException('Please check server logs');
   }
