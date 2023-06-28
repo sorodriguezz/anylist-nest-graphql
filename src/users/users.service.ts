@@ -3,13 +3,14 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { SignupInput } from 'src/auth/dto/inputs/signup.input';
+import { Repository } from 'typeorm';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,14 @@ export class UsersService {
         code: 'error-001',
         detail: `${email} not found`,
       });
+    }
+  }
+
+  async findOneById(id: string): Promise<User> {
+    try {
+      return await this.usersRepository.findOneByOrFail({ id });
+    } catch (error) {
+      throw new NotFoundException(`${id} not found`);
     }
   }
 
