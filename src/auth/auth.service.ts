@@ -49,7 +49,14 @@ export class AuthService {
     };
   }
 
-  async revalidateToken() {}
+  revalidateToken(user: User): AuthResponse {
+    const token = this.getJwtToken(user.id);
+
+    return {
+      token,
+      user,
+    };
+  }
 
   async validateUser(id: string): Promise<User> {
     const user = await this.usersService.findOneById(id);
