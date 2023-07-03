@@ -6,7 +6,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthResponse } from './types/auth-response.type';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { ValidRoles } from './enums/valid-roles.enum';
 
 @Resolver(() => AuthResolver)
 export class AuthResolver {

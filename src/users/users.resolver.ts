@@ -8,7 +8,8 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [User], { name: 'users' })
-  findAll(): Promise<User[]> {
+  findAll(@Args('validRoles') validRoles: string): Promise<User[]> {
+    console.log(validRoles);
     return this.usersService.findAll();
   }
 
