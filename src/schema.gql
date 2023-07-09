@@ -66,6 +66,8 @@ input UpdateUserInput {
   fullName: String
   password: String
   id: ID!
+  roles: [ValidRoles!]
+  isActive: Boolean
 }
 
 input SignupInput {

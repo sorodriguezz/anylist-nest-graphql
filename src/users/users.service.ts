@@ -61,8 +61,23 @@ export class UsersService {
     }
   }
 
-  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
-    return null;
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+    userAdmin: User,
+  ): Promise<User> {
+    try {
+      const user = await this.usersRepository.preload({
+        ...updateUserInput,
+        id,
+      });
+
+      user.lastUpdateBy = userAdmin;
+
+      return await this.usersRepository.save(user);
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 
   async block(id: string, adminUser: User): Promise<User> {
