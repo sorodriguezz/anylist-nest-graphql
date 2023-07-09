@@ -61,12 +61,15 @@ export class UsersService {
     }
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+    return null;
   }
 
-  async block(id: string): Promise<User> {
-    throw new Error(`block not implemented`);
+  async block(id: string, adminUser: User): Promise<User> {
+    const userToBlok = await this.findOneById(id);
+    userToBlok.isActive = false;
+    userToBlok.lastUpdateBy = adminUser;
+    return await this.usersRepository.save(userToBlok);
   }
 
   private handleDBErrors(error: any): never {
