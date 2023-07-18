@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateItemInput, UpdateItemInput } from './dto/inputs';
 import { Item } from './entities/item.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ItemsService {
@@ -10,13 +11,19 @@ export class ItemsService {
     @InjectRepository(Item) private readonly itemsRepository: Repository<Item>,
   ) {}
 
-  async create(createItemInput: CreateItemInput): Promise<Item> {
-    const newItem = this.itemsRepository.create(createItemInput);
+  async create(createItemInput: CreateItemInput, user: User): Promise<Item> {
+    const newItem = this.itemsRepository.create({ ...createItemInput, user });
     return await this.itemsRepository.save(newItem);
   }
 
-  async findAll(): Promise<Item[]> {
-    return this.itemsRepository.find();
+  async findAll(user: User): Promise<Item[]> {
+    return this.itemsRepository.find({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
   }
 
   async findOne(id: string): Promise<Item> {
