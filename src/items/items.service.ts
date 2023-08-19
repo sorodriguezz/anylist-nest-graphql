@@ -33,7 +33,7 @@ export class ItemsService {
       .where(`"userId" = :userId`, { userId: user.id });
 
     if (search) {
-      queryBuilder.andWhere('LOWER(name) like :name', {
+      queryBuilder.andWhere('LOWER(name) LIKE :name', {
         name: `%${search.toLocaleLowerCase()}%`,
       });
     }
