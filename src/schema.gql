@@ -2,10 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ListItem {
+  id: ID!
+  quantity: Float!
+  completed: Boolean!
+  item: Item!
+}
+
 type List {
   id: ID!
   name: String!
   user: User!
+  items: [ListItem!]!
 }
 
 type User {
@@ -26,6 +34,7 @@ type Item {
   name: String!
   quantityUnits: String
   user: User!
+  listItem: [ListItem!]!
 }
 
 type AuthResponse {
@@ -41,6 +50,7 @@ type Query {
   item(id: ID!): Item!
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
   list(id: ID!): List!
+  listItem: [ListItem!]!
 }
 
 """Roles permitidos para la enumación"""
@@ -61,6 +71,7 @@ type Mutation {
   createList(createListInput: CreateListInput!): List!
   updateList(updateListInput: UpdateListInput!): List!
   removeList(id: ID!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
 
   """Ejecuta la construccion de una BD"""
   executeSeed: Boolean!
@@ -104,4 +115,11 @@ input CreateListInput {
 input UpdateListInput {
   name: String
   id: ID!
+}
+
+input CreateListItemInput {
+  quantity: Float = 0
+  completed: Boolean = false
+  listId: ID!
+  itemId: ID!
 }
