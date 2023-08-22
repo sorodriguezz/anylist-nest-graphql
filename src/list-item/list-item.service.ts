@@ -1,6 +1,6 @@
 import { PaginationArgs, SearchArgs } from '../common/dto/args';
 import { List } from 'src/lists/entities/list.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateListItemInput } from './dto/create-list-item.input';
 import { UpdateListItemInput } from './dto/update-list-item.input';
 import { Repository } from 'typeorm';
@@ -53,8 +53,12 @@ export class ListItemService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} listItem`;
+  async findOne(id: string): Promise<ListItem> {
+    const listItem = await this.listItemRepository.findOneBy({ id });
+    if (!listItem)
+      throw new NotFoundException(`List item with id ${id} not found`);
+
+    return listItem;
   }
 
   update(id: number, updateListItemInput: UpdateListItemInput) {
