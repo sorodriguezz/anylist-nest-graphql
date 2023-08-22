@@ -21,7 +21,9 @@ export class ListItemService {
       item: { id: itemId },
       list: { id: listId },
     });
-    return this.listItemRepository.save(newListItem);
+    await this.listItemRepository.save(newListItem);
+
+    return this.findOne(newListItem.id);
   }
 
   async findAll(
@@ -61,8 +63,34 @@ export class ListItemService {
     return listItem;
   }
 
-  update(id: number, updateListItemInput: UpdateListItemInput) {
-    return `This action updates a #${id} listItem`;
+  async update(
+    id: string,
+    updateListItemInput: UpdateListItemInput,
+  ): Promise<ListItem> {
+    const { listId, itemId, ...rest } = updateListItemInput;
+
+    const queryBuilder = this.listItemRepository
+      .createQueryBuilder()
+      .update()
+      .set(rest)
+      .where('id = :id', { id });
+
+    if (listId) queryBuilder.set({ list: { id: listId } });
+    if (itemId) queryBuilder.set({ list: { id: itemId } });
+
+    await queryBuilder.execute();
+
+    return this.findOne(id);
+
+    // const listItem = await this.listItemRepository.preload({
+    //   ...rest,
+    //   list: { id: listId },
+    //   item: { id: itemId },
+    // });
+
+    // if (!listItem)
+    //   throw new NotFoundException(`List item with id ${id} not found`);
+    // return this.listItemRepository.save(listItem);
   }
 
   remove(id: number) {
